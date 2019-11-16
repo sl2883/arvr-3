@@ -7,6 +7,8 @@ public class LightsaberModuleConnector : MonoBehaviour
     //The GameObject this connector is going to connect
     public GameObject objectToConnect;
 
+    public GameObject glueZone;
+
     //Does connecting this object requires glue
     public bool requiresGlue;
 
@@ -33,13 +35,21 @@ public class LightsaberModuleConnector : MonoBehaviour
         {
             //check if the other obejct is objectToConnect
             //if so change IsConnected to true
+            if(other.gameObject.GetInstanceID() == objectToConnect.GetInstanceID())
+            {
+                IsConnected = true;
+            }
+            
         }
 
         if(requiresGlue)
         {
             //check if the other object is GlueZone
             //if so switch off requiresGlue
-            
+            if(other.gameObject.GetInstanceID() == glueZone.GetInstanceID())
+            {
+                requiresGlue = false;
+            }
         }
     }
 }

@@ -45,7 +45,10 @@ public class LightsaberBehavior : MonoBehaviour
     private void Awake()
     {
         //[TODO]Getting the info of OVRGrabbable
-        
+        grabState = GetComponent<OVRGrabbable>();
+        bladeIsActivated = false;
+        quillonIsInstalled = false;
+        powerIsInstalled = false;
     }
 
     private void FixedUpdate()
@@ -57,45 +60,85 @@ public class LightsaberBehavior : MonoBehaviour
         ConnectingQuillon();
 
         //[TODO]Once the lightsaber is done assembling, set the blade GameObject active.
-        
+
         //[TODO]If the lightsaber is done assembled, change bladeIsActivated after pressing the A button on the R-Controller while the player is grabbing it
         SetBladeStatus(bladeIsActivated);
+        
+        
     }
 
     void ConnectingPower()
     {
-        
         //get the connector state of power
-        
-        //if it is connected:
-       
+        if (gameObject.GetComponentInChildren<LightsaberModuleConnector>().IsConnected) {
+            //if it is connected:
+            
             //activate the pre-installed power part on the handle
-            
+            lightsaberPowerInstalled.SetActive(true);
+
             //simply make the power module "invisible" by switching off its mesh renderer
-            
+            (lightsaberPowerModule.GetComponent<MeshRenderer>()).enabled = false;
+
             //we dont need the connect area anymore so switch it off
-            
+            gameObject.GetComponentInChildren<LightsaberModuleConnector>().enabled = false;
+
             powerIsInstalled = true;
-        
+        }
+
     }
 
     void ConnectingQuillon()
-    { 
-        
-            //same process as in power connection        
+    {
+        if (!quillonIsInstalled && lightsaberPowerInstalled.GetComponentInChildren<LightsaberModuleConnector>().IsConnected)
+        {
+            Debug.Log("SUNNY --- In LightSaber, inside quillion");
+            //if it is connected:
+
+            //activate the pre-installed power part on the handle
+            lightsaberQuillonInstalled.SetActive(true);
+
+            Debug.Log("SUNNY --- In LightSaber, quillion installed");
+
+            //simply make the power module "invisible" by switching off its mesh renderer
+            (lightsaberQuillonModule.GetComponent<MeshRenderer>()).enabled = false;
+
+            Debug.Log("SUNNY --- In LightSaber, quillion mesh off");
+
+            //we dont need the connect area anymore so switch it off
+            lightsaberPowerInstalled.GetComponentInChildren<LightsaberModuleConnector>().enabled = false;
+
+            Debug.Log("SUNNY --- In LightSaber, module off");
+
             quillonIsInstalled = true;
+        }
+
+        //same process as in power connection        
+        
     }
 
     void SetBladeStatus(bool bladeStatus)
     {
-        if(!bladeStatus)
+        if (quillonIsInstalled)
         {
-            //Lightsaber goes back
-        }
+            if (!bladeStatus && OVRInput.Get(OVRInput.Button.One))
+            {
+                Debug.Log("SUNNY -- in blade active");
+                //Lightsaber goes back
+                lightsaberBlade.gameObject.SetActive(true);
+                bladeIsActivated = true;
 
-        if(bladeStatus)
-        {
-           //Lightsaber pulls out
+                lightsaberBlade.gameObject.transform.localScale = new Vector3(0.6f, 1.3f, 1.3f);
+            }
+
+            if (bladeStatus && !OVRInput.Get(OVRInput.Button.One))
+            {
+                //Lightsaber pulls out
+                Debug.Log("SUNNY -- in blade deactivated");
+                lightsaberBlade.gameObject.SetActive(false);
+                bladeIsActivated = false;
+
+                lightsaberBlade.gameObject.transform.localScale = new Vector3(0.6f, 1.3f, 1.3f);
+            }
         }
     }
 }
