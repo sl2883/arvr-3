@@ -23,7 +23,7 @@ public class GlueGunBehavior : MonoBehaviour
     {
         //If the gluegun is being grabbed, the gluezone is active while the trigger is pressed
         
-        if(grabState.isGrabbed && OVRInput.Get(OVRInput.Button.Three)) //OVRInput.Get(OVRInput.Button.One)
+        if(grabState.isGrabbed && OVRInput.Get(OVRInput.RawButton.LIndexTrigger)) //OVRInput.Get(OVRInput.Button.One)
         {
             glueZone.gameObject.SetActive(true);
             Debug.Log("Sunny -- Here in gluegun down state");

@@ -134,10 +134,9 @@ public class LightsaberBehavior : MonoBehaviour
             {
                 //Lightsaber pulls out
                 Debug.Log("SUNNY -- in blade deactivated");
-                lightsaberBlade.gameObject.SetActive(false);
                 bladeIsActivated = false;
 
-                lightsaberBlade.gameObject.transform.localScale = new Vector3(0.6f, 1.3f, 1.3f);
+                lightsaberBlade.gameObject.transform.localScale = new Vector3(0.001f, 1.3f, 1.3f);
             }
         }
     }

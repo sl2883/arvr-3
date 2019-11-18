@@ -111,6 +111,9 @@ public class LocomotionTeleport : MonoBehaviour
 	[Tooltip("Allow rotation after the teleport has occurred but before the system has returned to the ready state.")]
 	public bool EnableRotationDuringPostTeleport = true;
 
+
+    public GameObject sphereColliderContainer;
+
 	/// <summary>
 	/// Helper function to enable rotation movement during the various teleport states.
 	/// Rotation may not be desired at all states, for instance during aiming it may be preferred to prevent rotation (snap turn or linear) 
@@ -280,17 +283,18 @@ public class LocomotionTeleport : MonoBehaviour
 	[Tooltip("Height of the capsule used for collision testing when aiming to possible teleport destinations. Ignored if UseCharacterCollisionData is true.")]
 	public float AimCollisionHeight;
 
-	/// <summary>
-	/// AimCollisionTest is used by many of the aim handlers to standardize the testing of aiming beams. By choosing between the increasingly restrictive 
-	/// point, sphere and capsule tests, the aiming system can limit targeting to routes which are not physically blocked. For example, a sphere test 
-	/// is good for ensuring the player can't teleport through bars to get out of a jail cell. 
-	/// </summary>
-	/// <param name="start"></param>
-	/// <param name="end"></param>
-	/// <param name="aimCollisionLayerMask"></param>
-	/// <param name="hitInfo"></param>
-	/// <returns></returns>
-	public bool AimCollisionTest(Vector3 start, Vector3 end, LayerMask aimCollisionLayerMask, out RaycastHit hitInfo)
+
+    /// <summary>
+    /// AimCollisionTest is used by many of the aim handlers to standardize the testing of aiming beams. By choosing between the increasingly restrictive 
+    /// point, sphere and capsule tests, the aiming system can limit targeting to routes which are not physically blocked. For example, a sphere test 
+    /// is good for ensuring the player can't teleport through bars to get out of a jail cell. 
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="end"></param>
+    /// <param name="aimCollisionLayerMask"></param>
+    /// <param name="hitInfo"></param>
+    /// <returns></returns>
+    public bool AimCollisionTest(Vector3 start, Vector3 end, LayerMask aimCollisionLayerMask, out RaycastHit hitInfo)
 	{
 		var delta = end - start;
 		var distance = delta.magnitude;
@@ -404,7 +408,7 @@ public class LocomotionTeleport : MonoBehaviour
 	private void Awake()
 	{
 		LocomotionController = GetComponent<LocomotionController>();
-		CreateNewTeleportDestination();
+        CreateNewTeleportDestination();
 	}
 
 	/// <summary>
@@ -781,11 +785,15 @@ public class LocomotionTeleport : MonoBehaviour
 			Teleported(characterTransform, destPosition, destRotation);
 		}
 
-		characterTransform.position = destPosition;
+        sphereColliderContainer.SetActive(false);
+
+        characterTransform.position = destPosition;
 		characterTransform.rotation = destRotation;
 
 		LocomotionController.PlayerController.Teleported = true;
-	}
+
+        sphereColliderContainer.SetActive(true);
+    }
 
 	/// <summary>
 	/// Convenience method for finding the character's position.
